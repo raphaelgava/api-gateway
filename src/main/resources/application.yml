@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          #localhost:8765/MS-BOOK-SERVICE/book-service/2/BRL ->localhost:8765/ms-book-service/book-service/2/BRL
+          #localhost:8765/MS-CAMBIO-SERVICE/cambio-service/7.87/USD/BRL -> localhost:8765/ms-cambio-service/cambio-service/7.87/USD/BRL
+          lower-case-service-id: true #para permitir que seja entendido o redirecionamento em letras minúsculas (nome do serviço)
+
+server:
+  port: 8765 #Porta padrão é a 8125
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka #endereço do eureka
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework: INFO
