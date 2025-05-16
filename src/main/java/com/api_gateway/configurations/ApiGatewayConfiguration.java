@@ -33,7 +33,7 @@ public class ApiGatewayConfiguration {
         //  cloud:
         //    gateway:
         //      routes:
-        //        - id: ms-cambio-service
+        //      - id: ms-cambio-service
         //          uri: lb://ms-cambio-service
         //          predicates:
         //            - Path=/ms-cambio-service/**
