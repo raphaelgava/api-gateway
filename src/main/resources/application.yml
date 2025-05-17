@@ -1,26 +1,41 @@
 spring:
   application:
     name: api-gateway
-#  cloud: #Comentado após a criação da classe ApiGateway Configuration
-#    gateway:
-#      discovery:
-#        locator:
-#          enabled: true
-#          #localhost:8765/MS-BOOK-SERVICE/book-service/2/BRL ->localhost:8765/ms-book-service/book-service/2/BRL
-#          #localhost:8765/MS-CAMBIO-SERVICE/cambio-service/7.87/USD/BRL -> localhost:8765/ms-cambio-service/cambio-service/7.87/USD/BRL
+  cloud: #Comentado após a criação da classe ApiGateway Configuration
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          #localhost:8765/MS-BOOK-SERVICE/book-service/2/BRL ->localhost:8765/ms-book-service/book-service/2/BRL
+          #localhost:8765/MS-CAMBIO-SERVICE/cambio-service/7.87/USD/BRL -> localhost:8765/ms-cambio-service/cambio-service/7.87/USD/BRL
 #          lower-case-service-id: true #para permitir que seja entendido o redirecionamento em letras minúsculas (nome do serviço)
-#      #Outra forma de fazer a configuração sem usar a classe de configuração
-#      routes:
-#      - id: cambio-service
-#        uri: lb://ms-cambio-service
+      #Outra forma de fazer a configuração sem usar a classe de configuração
+      routes:
+      - id: cambio-service
+        uri: lb://ms-cambio-service
+        predicates:
+        - Path=/cambio-service/**
+      - id: book-service
+        uri: lb://ms-book-service
+        predicates:
+          - Path=/book-service/**
+      - id: openapi
+        uri: lb://api-gateway
+        predicates:
+          - Path=/v3/api-docs/**
+        filters:
+          - RewritePath=/v3/api-docs/(?<path>.*), /${path}/v3/api-docs
+          - name: PrePostLoggingFilter
+#      - id: openapi
+#        uri: lb://api-gateway
 #        predicates:
-#        - Path=/cambio-service/**
-#      - id: book-service
-#        uri: lb://ms-book-service
-#        predicates:
-#          - Path=/book-service/**
+#          - Path=/v3/api-docs/**
+#        filters:
+###          - RewritePath=/v3/api-docs/(?<segment>.*), /$\{segment}/v3/api-docs
+#          - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+##        - RewritePath=/v3/api-docs/(?<path>.*), /cambio-service/v3/api-docs
 
-
+swagger: 3.0.0
 
 server:
   port: 8765 #Porta padrão é a 8125
@@ -35,3 +50,4 @@ logging:
     org.springframework.cloud.gateway: DEBUG
     org.springframework.web: DEBUG
     org.springframework: INFO
+    web: DEBUG

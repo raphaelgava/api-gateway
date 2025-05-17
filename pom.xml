@@ -58,10 +58,24 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
+		<!-- Começo Eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+		<!-- Fim Eureka -->
+		<!-- Começo Swagger -->
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId> &lt;!&ndash; http://localhost:8101/v3/api-docs &ndash;&gt;-->
+<!--			<artifactId>springdoc-openapi-starter-common</artifactId>-->
+<!--			<version>2.8.8</version> &lt;!&ndash; Dá erro se não colocar a versão pois o springboot não gerencia por padrão! &ndash;&gt;-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springdoc</groupId> <!-- http://localhost:8765/swagger-ui -->
+			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId> <!-- É diferente da dependência dos MS -->
+			<version>2.8.8</version> <!-- Dá erro se não colocar a versão pois o springboot não gerencia por padrão! -->
+		</dependency>
+		<!-- Fim Swagger -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
