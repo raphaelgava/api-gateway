@@ -32,6 +32,7 @@ public class PrePostLoggingFilter extends AbstractGatewayFilterFactory<PrePostLo
 
     public PrePostLoggingFilter() {
         super(Config.class);
+        LOGGER.info("PrePostLogginFilter created");
     }
 
     @Override
