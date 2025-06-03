@@ -37,8 +37,7 @@ jobs:
           with:
             # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
             java-version: '21'
-            # The path to the `.java-version` file. See examples of supported syntax in README file
-            java-version-file: 'adopt'
+            distribution: 'oracle'
 
         - name: Eureka Naming Server
           working-directory: ./naming-server
