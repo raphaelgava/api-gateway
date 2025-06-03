@@ -24,13 +24,26 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+        - uses: actions/checkout@v4
       
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3.4.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}       
+        - name: Login to Docker Hub
+          uses: docker/login-action@v3.4.0
+          with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_PASSWORD }}  
+
+        - name: Setup Java JDK
+          uses: actions/setup-java@v3.14.1
+          with:
+            # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
+            java-version: '21'
+            # The path to the `.java-version` file. See examples of supported syntax in README file
+            java-version-file: 'adopt'
+
+        - name: Eureka Naming Server
+          working-directory: ./naming-server
+          run: mvn spring-boot:build-image -DskipTests -X -e -f pom.xml
+            
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
