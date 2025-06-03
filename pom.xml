@@ -114,6 +114,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration> <!-- configuration build: spring-boot:build-image -DskipTests -X -e -f pom.xml -->
+					<image> <!-- docker run -p 8761:8761 raphaelgava1/api-gateway:0.0.1-SNAPSHOT -->
+						<name>raphaelgava1/${project.artifactId}:${project.version}</name>
+						<pullPolicy>IF_NOT_PRESENT</pullPolicy> <!-- baixa se não existir -->
+					</image>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

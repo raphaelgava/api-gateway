@@ -19,28 +19,45 @@ spring:
         uri: lb://ms-book-service
         predicates:
           - Path=/book-service/**
+      - id: add-trailing-slash
+        uri: no://op   # URI fictícia; essa rota realiza apenas a reescrita/redirecionamento
+        predicates:
+          - Path=/**
+        filters:
+          - RewritePath=^(?<path>/.*?)(?<!/)$, ${path}/
       - id: openapi
         uri: lb://api-gateway
         predicates:
           - Path=/v3/api-docs/**
         filters:
-          - RewritePath=/v3/api-docs/(?<path>.*), /${path}/v3/api-docs
+          # Swagger continua não funcionando para a api-gateway pois a request vem:
+          #http://localhost:8765/v3/api-docs/book-service ao invés de vir com a barra ao final:
+          #http://localhost:8765/v3/api-docs/book-service/ que é quando o filtro entende e
+#          - RewritePath=/v3/api-docs/(.*), /$1v3/api-docs #retirando a barra a mais
+          #- RewritePath=/v3/api-docs/(.*), /$1/v3/api-docs
+          #- RewritePath=/v3/api-docs/(?<segment>.*), '/$$\{segment}/v3/api-docs'
+          - RewritePath=/v3/api-docs/(?<segment>.*), /${segment}v3/api-docs # retirando a barra a mais
           - name: PrePostLoggingFilter
-#      - id: openapi
-#        uri: lb://api-gateway
-#        predicates:
-#          - Path=/v3/api-docs/**
-#        filters:
-###          - RewritePath=/v3/api-docs/(?<segment>.*), /$\{segment}/v3/api-docs
-#          - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
-##        - RewritePath=/v3/api-docs/(?<path>.*), /cambio-service/v3/api-docs
+#  webflux:
+#    matching-strategy: ant_path_matcher
 
 swagger: 3.0.0
 
 management:
   tracing:
     sampling: # definindo % das amostras
-      probability: 1 #5% quando for pra produção
+      probability: 1.0 #5% quando for pra produção
+
+  endpoint:
+    health:
+      show-details: always
+
+  #Para evitar o erro:
+  #2025-05-28T18:14:48.603-03:00 WARN 1 --- [api-gateway] [/api/v2/spans}}] [ ] z.r.i.AsyncReporter$BoundedAsyncReporter : Spans were dropped due to exceptions. All subsequent errors will be logged at FINE level.
+  #2025-05-28T18:14:48.603-03:00 WARN 1 --- [api-gateway] [/api/v2/spans}}] [ ] z.r.i.AsyncReporter$BoundedAsyncReporter : Dropped 2 spans due to ResourceAccessException(I/O error on POST request for "http://localhost:9411/api/v2/spans": Connect to http://localhost:9411⁠ [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused)
+  zipkin:
+    tracing:
+      endpoint: ${SPRING_ZIPKIN_BASEURL:http://localhost:9411/}api/v2/spans
 
 server:
   port: 8765 #Porta padr�o � a 8125
@@ -49,6 +66,10 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka #endere�o do eureka
+  instance:
+    prefer-ip-address: true
+    hostname: ${HOSTNAME:localhost}
+    instance-id: ${spring.application.name}:${server.port}
 
 logging:
   level:
